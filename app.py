@@ -11,6 +11,8 @@ from datetime import datetime
 import numpy as np
 from scipy.interpolate import interpn
 import plotly.express as px
+import requests
+from io import StringIO
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -218,8 +220,14 @@ def all_data(route):
     route_df['cumul_dist'] = route_df['distance'].cumsum()  # kolumna z zsumowanymi odległościami od początku trasy
 
     # wczytanie modelu geoidy
-    model1 = np.genfromtxt('x00.txt', skip_header=1)
-    model2 = np.genfromtxt('x01.txt', skip_header=1)
+    link1 = 'https://raw.githubusercontent.com/MBaliszewski/app_pyanywhere/main/x00.txt'
+    r1 = requests.get(link1)
+    r1 = StringIO(r1.text)
+    link2 = 'https://raw.githubusercontent.com/MBaliszewski/app_pyanywhere/main/x01.txt'
+    r2 = requests.get(link2)
+    r2 = StringIO(r2.text)
+    model1 = np.genfromtxt(r1, skip_header=1)
+    model2 = np.genfromtxt(r2, skip_header=1)
 
     model = np.concatenate((model1, model2), axis=0)
 
